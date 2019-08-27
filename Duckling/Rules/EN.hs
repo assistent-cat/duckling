@@ -19,6 +19,7 @@ import Prelude
 import Duckling.Dimensions.Types
 import Duckling.Locale
 import Duckling.Types
+import qualified Duckling.Region as R (Region(CA))
 import qualified Duckling.AmountOfMoney.EN.Rules as AmountOfMoney
 import qualified Duckling.AmountOfMoney.EN.AU.Rules as AmountOfMoneyAU
 import qualified Duckling.AmountOfMoney.EN.BZ.Rules as AmountOfMoneyBZ
@@ -62,7 +63,7 @@ defaultRules dim             = langRules dim
 localeRules :: Region -> Some Dimension -> [Rule]
 localeRules AU (This AmountOfMoney) = AmountOfMoneyAU.rules
 localeRules BZ (This AmountOfMoney) = AmountOfMoneyBZ.rules
-localeRules CA (This AmountOfMoney) = AmountOfMoneyCA.rules
+localeRules R.CA (This AmountOfMoney) = AmountOfMoneyCA.rules
 localeRules GB (This AmountOfMoney) = AmountOfMoneyGB.rules
 localeRules IE (This AmountOfMoney) = AmountOfMoneyIE.rules
 localeRules IN (This AmountOfMoney) = AmountOfMoneyIN.rules
@@ -74,7 +75,7 @@ localeRules US (This AmountOfMoney) = AmountOfMoneyUS.rules
 localeRules ZA (This AmountOfMoney) = AmountOfMoneyZA.rules
 localeRules AU (This Time) = TimeAU.rules
 localeRules BZ (This Time) = TimeBZ.rules
-localeRules CA (This Time) = TimeCA.rules
+localeRules R.CA (This Time) = TimeCA.rules
 localeRules GB (This Time) = TimeGB.rules
 localeRules IE (This Time) = TimeIE.rules
 localeRules IN (This Time) = TimeIN.rules

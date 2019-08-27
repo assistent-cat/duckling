@@ -27,6 +27,7 @@ import Duckling.Ranking.Train
 import Duckling.Ranking.Types
 import Duckling.Rules
 import Duckling.Testing.Types
+import qualified Duckling.Region as R (Region(CA))
 import qualified Duckling.Time.AR.Corpus as ARTime
 import qualified Duckling.Time.DA.Corpus as DATime
 import qualified Duckling.Time.DE.Corpus as DETime
@@ -172,6 +173,7 @@ getCorpusForLang :: Lang -> Corpus
 getCorpusForLang AR = ARTime.corpus
 getCorpusForLang BG = (testContext, testOptions, [])
 getCorpusForLang BN = (testContext, testOptions, [])
+getCorpusForLang CA = (testContext, testOptions, [])
 getCorpusForLang CS = (testContext, testOptions, [])
 getCorpusForLang DA = DATime.corpus
 getCorpusForLang DE = DETime.corpus
@@ -214,7 +216,7 @@ getCorpusForLang VI = VITime.corpus
 getCorpusForLang ZH = ZHTime.corpus
 
 getExamplesForLocale :: Lang -> Region -> [Example]
-getExamplesForLocale EN CA = EN_CATime.allExamples
+getExamplesForLocale EN R.CA = EN_CATime.allExamples
 getExamplesForLocale EN GB = EN_GBTime.allExamples
 getExamplesForLocale EN US = EN_USTime.allExamples
 getExamplesForLocale NL BE = NL_BETime.allExamples

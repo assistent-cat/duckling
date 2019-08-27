@@ -12,7 +12,7 @@
 module Duckling.Locale
   ( Lang(..)
   , Locale(..)
-  , Region(AU,BE,BZ,CA,CN,GB,HK,IE,IN,JM,MO,NZ,PH,TT,TW,US,ZA)
+  , Region(AU,BE,BZ,CN,GB,HK,IE,IN,JM,MO,NZ,PH,TT,TW,US,ZA)
   , allLocales
   , makeLocale
   ) where
@@ -27,8 +27,8 @@ import qualified Data.HashMap.Strict as HashMap
 import qualified Data.HashSet as HashSet
 import qualified TextShow as TS
 
-import Duckling.Region hiding (NL)
-import qualified Duckling.Region as R (Region(NL))
+import Duckling.Region hiding (NL,CA)
+import qualified Duckling.Region as R (Region(NL,CA))
 
 -- | ISO 639-1 Language.
 -- See https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
@@ -36,6 +36,7 @@ data Lang
   = AR
   | BG
   | BN
+  | CA
   | CS
   | DA
   | DE
@@ -101,7 +102,7 @@ makeLocale lang (Just region)
 
 allLocales :: HashMap Lang (HashSet Region)
 allLocales = HashMap.fromList
-  [ (EN, HashSet.fromList [AU, BZ, CA, GB, IN, IE, JM, NZ, PH, ZA, TT, US])
+  [ (EN, HashSet.fromList [AU, BZ, R.CA, GB, IN, IE, JM, NZ, PH, ZA, TT, US])
   , (NL, HashSet.fromList [BE, R.NL])
   , (ZH, HashSet.fromList [CN, HK, MO, TW])
   ]
