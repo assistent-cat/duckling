@@ -244,7 +244,7 @@ ruleMultiply :: Rule
 ruleMultiply = Rule
   { name = "compose by multiplication"
   , pattern =
-    [ dimension Numeral
+    [ Predicate isPositive
     , Predicate isMultipliable
     ]
   , prod = \tokens -> case tokens of
