@@ -923,6 +923,7 @@ test-suite duckling-test
                      , Duckling.Numeral.AR.Tests
                      , Duckling.Numeral.BG.Tests
                      , Duckling.Numeral.BN.Tests
+                     , Duckling.Numeral.CA.Tests
                      , Duckling.Numeral.CS.Tests
                      , Duckling.Numeral.DA.Tests
                      , Duckling.Numeral.DE.Tests

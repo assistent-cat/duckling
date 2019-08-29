@@ -30,11 +30,10 @@ ruleNumeralsPrefixWithNegativeOrMinus = Rule
   { name = "numbers prefix with -, negative or minus"
   , pattern =
     [ regex "-|menys"
-    , Predicate isPositive
+    , Predicate $ and . sequence [not . isMultipliable, isPositive]
     ]
   , prod = \tokens -> case tokens of
-      (_:Token Numeral NumeralData{TNumeral.value = v}:_) ->
-        double $ v * (- 1)
+      (_:Token Numeral nd:_) -> double (TNumeral.value nd * (-1))
       _ -> Nothing
   }
 

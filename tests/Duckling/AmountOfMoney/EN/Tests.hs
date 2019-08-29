@@ -20,6 +20,7 @@ import Duckling.Locale
 import Duckling.Testing.Asserts
 import Duckling.Testing.Types (testContext, testOptions, withLocale)
 import Duckling.Types (Range(..))
+import qualified Duckling.Region as R (Region(CA))
 import qualified Duckling.AmountOfMoney.EN.AU.Corpus as AU
 import qualified Duckling.AmountOfMoney.EN.BZ.Corpus as BZ
 import qualified Duckling.AmountOfMoney.EN.CA.Corpus as CA
@@ -121,7 +122,7 @@ localeTests = testGroup "Locale Tests"
   where
     localeAU = makeLocale EN $ Just AU
     localeBZ = makeLocale EN $ Just BZ
-    localeCA = makeLocale EN $ Just CA
+    localeCA = makeLocale EN $ Just R.CA
     localeGB = makeLocale EN $ Just GB
     localeIE = makeLocale EN $ Just IE
     localeIN = makeLocale EN $ Just IN
