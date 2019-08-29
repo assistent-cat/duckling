@@ -116,9 +116,9 @@ zeroToNineteenMap = HashMap.fromList
 
 ruleToNineteen :: Rule
 ruleToNineteen = Rule
-  { name = "number (0..15)"
+  { name = "number (0..19)"
   , pattern =
-    [ regex "(zero|u(na?)?|d(o|ue)s|tres|quatre|cinc|sis|set|vuit|nou|deu|onze|dotze|tretze|catorze|quinze|setze|disset|divuit|dinou)"
+    [ regex "(zero|u(na?)?|d(o|ue)s|tres|quatre|cinc|sis|set(ze)?|vuit|nou|deu|onze|dotze|tretze|catorze|quinze|disset|divuit|dinou)"
     ]
   , prod = \tokens -> case tokens of
       (Token RegexMatch (GroupMatch (match:_)):_) ->
@@ -147,7 +147,7 @@ ruleCompositeTens = Rule
   { name = "number (31..99)"
   , pattern =
     [ oneOf [30..90]
-    , regex "-"
+    , regex "(\\-|\\s)"
     , numberBetween 1 10
     ]
   , prod = \tokens -> case tokens of
@@ -176,24 +176,27 @@ ruleNumeralsSuffixesKMG = Rule
       _ -> Nothing
   }
 
-hundredsMap :: HashMap.HashMap Text.Text Integer
-hundredsMap = HashMap.fromList
-  [ ( "cent" , 100 )
-  , ( "cents" , 100 )
-  , ( "centes" , 100 )
-  ]
-
-ruleCompositeHundreds :: Rule
-ruleCompositeHundreds = Rule
-  { name = "number (200..900)"
-  , pattern =
-    [ numberBetween 2 10
-    , regex "-cente?s"
-    ]
+rulePowersOfTen :: Rule
+rulePowersOfTen = Rule
+  { name = "powers of tens"
+  , pattern = [regex "(\\-?cente?s?|((m|b)il(ió|io(ns)?)?))"]
   , prod = \tokens -> case tokens of
-    (_:Token Numeral NumeralData{TNumeral.value = v}:_) ->
-      double $ v * 100
-    _ -> Nothing
+      (Token RegexMatch (GroupMatch (match : _)) : _) ->
+        case Text.toLower match of
+          "cent" -> double 1e2 >>= withGrain 2 >>= withMultipliable
+          "cents" -> double 1e2 >>= withGrain 2 >>= withMultipliable
+          "centes" -> double 1e2 >>= withGrain 2 >>= withMultipliable
+          "-cents" -> double 1e2 >>= withGrain 2 >>= withMultipliable
+          "-centes" -> double 1e2 >>= withGrain 2 >>= withMultipliable
+          "mil" -> double 1e3 >>= withGrain 3 >>= withMultipliable
+          "milio" -> double 1e6 >>= withGrain 6 >>= withMultipliable
+          "milió" -> double 1e6 >>= withGrain 6 >>= withMultipliable
+          "milions" -> double 1e6 >>= withGrain 6 >>= withMultipliable
+          "bilio" -> double 1e9 >>= withGrain 9 >>= withMultipliable
+          "bilió" -> double 1e9 >>= withGrain 9 >>= withMultipliable
+          "bilions" -> double 1e9 >>= withGrain 9 >>= withMultipliable
+          _ -> Nothing
+      _ -> Nothing
   }
 
 ruleNumeralDotNumeral :: Rule
@@ -224,16 +227,44 @@ ruleIntegerWithThousandsSeparator = Rule
       _ -> Nothing
   }
 
+ruleSum :: Rule
+ruleSum = Rule
+  { name = "intersect 2 numbers"
+  , pattern =
+    [ Predicate $ and . sequence [hasGrain, isPositive]
+    , Predicate $ and . sequence [not . isMultipliable, isPositive]
+    ]
+  , prod = \tokens -> case tokens of
+      (Token Numeral NumeralData{TNumeral.value = val1, TNumeral.grain = Just g}:
+        Token Numeral NumeralData{TNumeral.value = val2}:
+        _) | (10 ** fromIntegral g) > val2 -> double $ val1 + val2
+      _ -> Nothing
+  }
+
+ruleMultiply :: Rule
+ruleMultiply = Rule
+  { name = "compose by multiplication"
+  , pattern =
+    [ dimension Numeral
+    , Predicate isMultipliable
+    ]
+  , prod = \tokens -> case tokens of
+      (token1:token2:_) -> multiply token1 token2
+      _ -> Nothing
+  }
+  
 rules :: [Rule]
 rules =
-  [ ruleCompositeHundreds
-  , ruleCompositeTens
+  [ ruleCompositeTens
   , ruleDecimalNumeral
   , ruleDecimalWithThousandsSeparator
   , ruleIntegerWithThousandsSeparator
+  , ruleMultiply
   , ruleNumeralDotNumeral
   , ruleNumeralsPrefixWithNegativeOrMinus
   , ruleNumeralsSuffixesKMG
+  , rulePowersOfTen
+  , ruleSum
   , ruleTens
   , ruleToNineteen
   , ruleTwenties
